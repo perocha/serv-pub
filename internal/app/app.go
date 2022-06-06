@@ -20,14 +20,14 @@ var (
 // Main entry point
 //
 func Run(cfg *config.Config) {
-	log.Printf("Dapr-starter is starting... service name: %v version: %v", cfg.App, cfg.Version)
+	log.Printf("Dapr is starting. Service name: %v version: %v", cfg.App, cfg.Version)
 
 	serverPort := cfg.App.Port
 	log.Printf("serverPort: %s", serverPort)
 
 	client, err := dapr.NewClient()
 	if err != nil {
-		panic(err)
+		log.Panicf("serv-pub::Fatal error::%s", err)
 	}
 	defer client.Close()
 
@@ -39,7 +39,7 @@ func Run(cfg *config.Config) {
 
 		// Publish an event using Dapr pub/sub
 		if err := client.PublishEvent(ctx, PUBSUB_NAME, PUBSUB_TOPIC, &myOrder); err != nil {
-			panic(err)
+			log.Panicf("serv-pub::Fatal error::%s", err)
 		}
 
 		log.Printf("Published data: %s", myOrder)
