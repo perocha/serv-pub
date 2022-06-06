@@ -7,7 +7,7 @@ import (
 	"time"
 
 	dapr "github.com/dapr/go-sdk/client"
-	"github.com/perocha/dapr-starter/config"
+	"github.com/perocha/serv-pub/config"
 )
 
 var (

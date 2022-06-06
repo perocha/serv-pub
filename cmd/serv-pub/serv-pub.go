@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/perocha/dapr-starter/config"
-	"github.com/perocha/dapr-starter/internal/app"
+	"github.com/perocha/serv-pub/config"
+	"github.com/perocha/serv-pub/internal/app"
 )
 
 //
