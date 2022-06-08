@@ -1,13 +1,11 @@
 package app
 
 import (
-	"context"
 	"log"
-	"strconv"
-	"time"
 
-	dapr "github.com/dapr/go-sdk/client"
+	"github.com/gin-gonic/gin"
 	"github.com/perocha/serv-pub/config"
+	"github.com/perocha/serv-pub/internal/controller"
 )
 
 var (
@@ -20,31 +18,11 @@ var (
 // Main entry point
 //
 func Run(cfg *config.Config) {
-	log.Printf("Dapr is starting. Service name: %v version: %v", cfg.App, cfg.Version)
+	log.Printf("Starting %v version: %v port: %v", cfg.App.Name, cfg.App.Version, cfg.App.Port)
 
-	serverPort := cfg.App.Port
-	log.Printf("serverPort: %s", serverPort)
+	router := gin.Default()
+	ctrl := controller.NewController()
 
-	client, err := dapr.NewClient()
-	if err != nil {
-		log.Panicf("serv-pub::Fatal error::%s", err)
-	}
-	defer client.Close()
-
-	ctx := context.Background()
-
-	for i := 1; i <= 20; i++ {
-		myOrder := `{"orderId":` + strconv.Itoa(i) + `}`
-		//		myOrder := order.Order{strconv.Itoa(i), "Description 1", "10,98"}
-
-		// Publish an event using Dapr pub/sub
-		if err := client.PublishEvent(ctx, PUBSUB_NAME, PUBSUB_TOPIC, &myOrder); err != nil {
-			log.Panicf("serv-pub::Fatal error::%s", err)
-		}
-
-		log.Printf("Published data: %s", myOrder)
-
-		time.Sleep(2000)
-	}
-
+	router.Group("/api/v1").POST("/msg", ctrl.PostMessage)
+	router.Run(":" + cfg.App.Port)
 }
